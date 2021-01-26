@@ -231,6 +231,26 @@ class Directive extends Printable
         return (!$this->getComment()->isEmpty());
     }
 
+    /**
+     * Get the name for this Directive
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Get the value for this Directive
+     *
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
     /*
      * ========== Setters ==========
      */

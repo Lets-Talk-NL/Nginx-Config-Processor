@@ -124,6 +124,26 @@ class Scope extends Printable
         return $this->parentDirective;
     }
 
+    /**
+     * Get Directives.
+     *
+     * @return Directive[]
+     */
+    public function getDirectives()
+    {
+        return $this->directives;
+    }
+
+    /**
+     * Get Printables.
+     *
+     * @return Printable[]
+     */
+    public function getPrintables()
+    {
+        return $this->printables;
+    }
+
     /*
      * ========== Setters ==========
      */
