@@ -89,11 +89,27 @@ class Directive extends Printable
     {
         $text = '';
         $inQuote = false;
+        $inComment = false;
+        $possibleComment = true;
         while (false === $configString->eof()) {
             $prevChar = $char ?? null;
-            $char = $configString->getChar();
+            $char     = $configString->getChar();
+
+            // Detect comments as we need to ignore quotes in those
+            if ($char === "\n") { // Comments always end after newlines
+                $inComment = false;
+                $possibleComment = true;
+            }
+            if($possibleComment && $char === '#'){
+                $inComment = true;
+                $possibleComment = false;
+            }
+            if(!$inComment && preg_match('/\s/', $char) === 0){
+                $possibleComment = false;
+            }
+
             // Detect open/close of quoted strings, ignoring escaped quotes
-            if (in_array($char, $inQuote !== false ? [$inQuote] : ['"', "'"], true) && $prevChar !== '\\') {
+            if (!$inComment && in_array($char, $inQuote !== false ? [$inQuote] : ['"', "'"], true) && $prevChar !== '\\') {
                 $inQuote = $inQuote ? false : $char;
             }
             if ($inQuote === false && '{' === $char) {
