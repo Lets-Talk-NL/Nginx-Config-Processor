@@ -88,16 +88,18 @@ class Directive extends Printable
     public static function fromString(Text $configString)
     {
         $text = '';
-        $inQuotes = false;
+        $inQuote = false;
         while (false === $configString->eof()) {
+            $prevChar = $char ?? null;
             $char = $configString->getChar();
-            if ('"' === $char) {
-                $inQuotes = !$inQuotes;
+            // Detect open/close of quoted strings, ignoring escaped quotes
+            if (in_array($char, $inQuote !== false ? [$inQuote] : ['"', "'"], true) && $prevChar !== '\\') {
+                $inQuote = $inQuote ? false : $char;
             }
-            if (!$inQuotes && '{' === $char) {
+            if ($inQuote === false && '{' === $char) {
                 return self::newDirectiveWithScope($text, $configString);
             }
-            if (!$inQuotes && ';' === $char) {
+            if ($inQuote === false && ';' === $char) {
                 return self::newDirectiveWithoutScope($text, $configString);
             }
             $text .= $char;
